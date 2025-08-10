@@ -35,8 +35,8 @@ export default function DropDown({ data }: Props) {
         w={0}
         opacity={0}
         _groupHover={{ h: "auto", w: "auto", top: "100%", opacity: 1,  }}
-        transition={"top .3s linear"}
-        transitionDelay={".2"}
+        transition={"top .3s "}
+        transitionDelay={".1"}
         
 
         

@@ -28,11 +28,11 @@ export default function Hero() {
           gap={5}
           h="full"
           justify={"center"}
-          maxW="500px"
+          maxW="600px"
         >
           <Text
             color={"white"}
-            fontSize={[50, 65, 80]}
+            fontSize={[50, 65, 75]}
             fontFamily={"hero"}
             lineHeight={1}
             fontWeight={500}

@@ -9,7 +9,7 @@ export default function Logo() {
         borderColor={"secondary.dark"}
         rounded={10}
       >
-        <Text fontSize={50} lineHeight={1} color={"primary.dark"}>
+        <Text fontSize={[40, 50]} lineHeight={1} color={"primary.dark"}>
           HA
         </Text>
       </Box>

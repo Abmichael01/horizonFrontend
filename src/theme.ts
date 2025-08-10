@@ -18,7 +18,7 @@ const config = defineConfig({
         border: { value: "#F9F9F9" }
       },
       fonts: {
-        hero: { value: "Dosis" }
+        hero: { value: "DM Sans" }
       }
     },
   },

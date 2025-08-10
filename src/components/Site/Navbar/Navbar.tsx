@@ -1,7 +1,10 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import XPadding from "../../Generals/XPadding";
 import Logo from "../../Generals/Logo";
 import DropDown from "./DropDown";
+import DropDownMobile from "./DropDownMobile";
+import { useState } from "react";
+import { MenuIcon, X } from "lucide-react";
 
 interface NavData {
   title: string;
@@ -123,8 +126,8 @@ const navData: NavData[] = [
   },
 ];
 
-
 export default function Navbar() {
+  const [openMenu, setOpenMenu] = useState(false);
   return (
     <XPadding
       display="flex"
@@ -133,13 +136,44 @@ export default function Navbar() {
       py="5"
       borderBottom={"1px solid"}
       borderBottomColor={"gray.200"}
-      zIndex={9999}
+      zIndex={99999}
+      pos="relative"
     >
       <Logo />
-      <Flex gap={8} align={"center"}>
+      <Flex gap={8} align={"center"} display={{ base: "none", lg: "flex" }}>
         {navData.map((nav, index) => (
           <div key={index}>
             <DropDown data={nav} />
+          </div>
+        ))}
+        <Button>login</Button>
+      </Flex>
+      <Box
+        onClick={() => setOpenMenu((prev) => !prev)}
+        fontSize={40}
+        color={"secondary.dark"}
+        cursor={"pointer"}
+        display={{ base: "block", lg: "none" }}
+      >
+        {!openMenu ? <MenuIcon className="size-[30px]" /> : <X />}
+      </Box>
+      <Flex
+        direction="column"
+        bg="white"
+        pos="absolute"
+        right={openMenu ? "0px" : "-100%"}
+        top="100%"
+        // h="100vh"
+        w="full"
+        zIndex={999}
+        display={{ base: "flex", lg: "none" }}
+        p={5}
+        className="-right-full"
+        transition={"right .4s ease-in-out"}
+      >
+        {navData.map((nav, index) => (
+          <div key={index}>
+            <DropDownMobile data={nav} />
           </div>
         ))}
         <Button>login</Button>
