@@ -1,40 +1,68 @@
-// src/apiClient.js
+import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from "axios";
 
-import axios from "axios";
+const API_BASE_URL = "http://localhost:8000/api";
 
-// Base URL of your Django API (update this with your Django API base URL)
-const API_BASE_URL = "http://localhost:8000/api";  // Replace with your Django API URL
-
-// Create an Axios instance with default configuration
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
-// Add a request interceptor to include the authorization token (if available) in the headers
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("key");  // Get token from localStorage (or cookies)
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// Token refresh state and queue
+let isRefreshing = false;
+let failedQueue: {
+  resolve: (value?: unknown) => void;
+  reject: (reason?: unknown) => void;
+}[] = [];
 
-// Add a response interceptor to handle error responses globally
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // You can handle errors globally here, like logging out the user on 401 or 403
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      // Clear the token if it's invalid
-      localStorage.removeItem("access_token");
-      window.location.href = "/login";  // Redirect to login page
+const processQueue = (error: AxiosError | null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
     }
+  });
+  failedQueue = [];
+};
+
+apiClient.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+    const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+
+    // Only handle 401 and if not already retried
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(() => apiClient(originalRequest));
+      }
+
+      isRefreshing = true;
+
+      try {
+        await apiClient.post("/token/refresh/");
+        processQueue(null);
+        isRefreshing = false;
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError as AxiosError);
+        isRefreshing = false;
+        window.location.href = "/portal/login";
+        return Promise.reject(refreshError);
+      }
+    }
+
+    // Second 401 after retry or other case, redirect to login
+    if (error.response && error.response.status === 401) {
+      window.location.href = "/portal/login";
+    }
+
     return Promise.reject(error);
   }
 );

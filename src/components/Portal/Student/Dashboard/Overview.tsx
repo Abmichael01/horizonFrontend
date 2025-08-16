@@ -13,7 +13,7 @@ const studentData = [
 
 export default function Overview() {
   return (
-    <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+    <Grid templateColumns="repeat(3, 1fr)" gap={5}>
       {studentData.map((data, index) => (
         <Box
           key={index}
@@ -26,7 +26,7 @@ export default function Overview() {
           spaceY="20px"
         >
           <Flex gap="2" align="center">
-            <Box w="16px" h="16px" bg={data.color} rounded="full" />
+            {/* <Box w="16px" h="16px" bg={data.color} rounded="full" /> */}
             <Text  >{data.title}</Text>
           </Flex>
           <Text fontWeight={500} color={data.color} fontSize={30} textAlign={"center"} >{data.value}</Text>
