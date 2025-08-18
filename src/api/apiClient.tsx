@@ -10,59 +10,31 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
-// Token refresh state and queue
-let isRefreshing = false;
-let failedQueue: {
-  resolve: (value?: unknown) => void;
-  reject: (reason?: unknown) => void;
-}[] = [];
-
-const processQueue = (error: AxiosError | null) => {
-  failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve();
-    }
-  });
-  failedQueue = [];
-};
-
 apiClient.interceptors.response.use(
-  (response: AxiosResponse) => response,
+  (response: AxiosResponse) => response, // Pass successful responses directly
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
-    // Only handle 401 and if not already retried
+    // Only handle 401 errors and make sure we haven't already retried this request
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        }).then(() => apiClient(originalRequest));
-      }
-
-      isRefreshing = true;
-
       try {
+        // Attempt to refresh the token
         await apiClient.post("/token/refresh/");
-        processQueue(null);
-        isRefreshing = false;
+
+        // Once refreshed, make the original request again
         return apiClient(originalRequest);
       } catch (refreshError) {
-        processQueue(refreshError as AxiosError);
-        isRefreshing = false;
+        // Redirect to login if refresh fails
         window.location.href = "/portal/login";
+
+        // Reject the original request to stop further processing
         return Promise.reject(refreshError);
       }
     }
 
-    // Second 401 after retry or other case, redirect to login
-    if (error.response && error.response.status === 401) {
-      window.location.href = "/portal/login";
-    }
-
+    // If it's another error (like network failure, etc.), just reject it
     return Promise.reject(error);
   }
 );

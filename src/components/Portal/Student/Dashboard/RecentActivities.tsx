@@ -1,6 +1,6 @@
 import BulletTitle from "@/components/Generals/BulletTitle";
 import { Box, Flex, Stack, Text } from "@chakra-ui/react";
-import { ClipboardList, History } from "lucide-react";
+import { History } from "lucide-react";
 
 export default function RecentActivities() {
   return (

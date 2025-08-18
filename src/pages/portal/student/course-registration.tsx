@@ -2,9 +2,14 @@ import CourseForm from "@/components/Portal/Student/CourseRegistration/CourseFor
 import RegisterCourses from "@/components/Portal/Student/CourseRegistration/RegisterCourses";
 import RegisteredCourses from "@/components/Portal/Student/CourseRegistration/RegisteredCourses";
 import { Box, Tabs } from "@chakra-ui/react";
+
 import { BookMarkedIcon, BookOpen, File } from "lucide-react";
 
 export default function CourseRegistration() {
+  // const [  ]
+  
+
+ 
   return (
     <Box
       bg="white"
