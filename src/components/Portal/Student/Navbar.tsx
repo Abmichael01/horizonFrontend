@@ -1,27 +1,30 @@
 import { logout } from "@/api/apiEndpoints";
-import { useNavigate } from "@/router";
+import { useSidebarStore } from "@/stores/sidebarStore";
 import {
   Avatar,
   Flex,
   Text,
   Menu,
   Portal,
+  Box
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
+import { SidebarClose, SidebarOpen } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip"
 
 export default function Navbar() {
-  const navigate = useNavigate();
+  const { isOpen, toggle } = useSidebarStore()
   const { mutate, isPending } = useMutation({
     mutationFn: () => logout(),
     onSuccess: () => {
-      navigate("/portal/login");
+      window.location.href = "/portal/login";
     },
   });
 
   return (
     <Flex
       py="20px"
-      px="40px"
+      px={[ "10px", "20px", "40px"]}
       align={"center"}
       justify="space-between"
       borderBottom="1px solid"
@@ -30,6 +33,9 @@ export default function Navbar() {
       top="0"
       right="0"
     >
+      <Box cursor="pointer" onClick={toggle} display={{ md:"block", lg:"none" }} >
+        { isOpen ? <Tooltip content="Close Sidebar"><SidebarClose /></Tooltip> : <Tooltip content="Open Sidebar"><SidebarOpen /></Tooltip> }
+      </Box>
       <Text>Hey</Text>
 
       <Menu.Root>

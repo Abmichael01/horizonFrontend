@@ -1,9 +1,33 @@
-import { Table, Button, Box } from "@chakra-ui/react";
-import { Course } from "@/types";
+import { Button, Table, Box } from "@chakra-ui/react";
+import { useCourseStore } from "@/stores/courseStore";
+import { useMutation } from "@tanstack/react-query";
+import { registerCourses } from "@/api/apiEndpoints";
+import { toaster } from "@/components/ui/toaster";
+import NoDataFound from "@/components/Generals/NoDataFound";
+import errorMessage from "@/lib/errorMessage";
 
-export default function AddedCourses({ addedCourses, setAddedCourses }: { addedCourses: Course[], setAddedCourses: React.Dispatch<React.SetStateAction<Course[]>> }) {
-  const removeCourse = (courseCode: string) => {
-    setAddedCourses((prev) => prev.filter((course) => course.code !== courseCode));
+export default function AddedCourses() {
+  const { addedCourses, removeCourse } = useCourseStore();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: { course_codes: string[] }) => registerCourses(data),
+    onSuccess: () => {
+      toaster.create({
+        type: "success",
+        description: "Registration Successful",
+      });
+    },
+    onError: (error: Error) => {
+      toaster.create({
+        type: "error",
+        description: errorMessage(error),
+      });
+    }
+  });
+
+  const register = () => {
+    const courses = addedCourses.map((course) => course.code);
+    mutate({ course_codes: courses });
   };
 
   const rows = addedCourses?.map((course) => (
@@ -12,7 +36,17 @@ export default function AddedCourses({ addedCourses, setAddedCourses }: { addedC
       <Table.Cell>{course.title}</Table.Cell>
       <Table.Cell>{course.units}</Table.Cell>
       <Table.Cell>
-        <Button colorScheme="red" size="sm" onClick={() => removeCourse(course.code)}>
+        <Button
+          colorScheme="red"
+          size="sm"
+          onClick={() => {
+            removeCourse(course.code);
+            toaster.create({
+              description: "Course Removed",
+              type: "info",
+            });
+          }}
+        >
           Remove Course
         </Button>
       </Table.Cell>
@@ -20,7 +54,7 @@ export default function AddedCourses({ addedCourses, setAddedCourses }: { addedC
   ));
 
   return (
-    <Box>
+    <Box spaceY="5">
       <Table.Root variant="outline">
         <Table.Header>
           <Table.Row>
@@ -30,8 +64,21 @@ export default function AddedCourses({ addedCourses, setAddedCourses }: { addedC
             <Table.ColumnHeader>Actions</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
-        <Table.Body>{rows}</Table.Body>
+        <Table.Body>
+          {addedCourses?.length !== 0 ? (
+            rows
+          ) : (
+            <Table.Row>
+              <Table.Cell colSpan={4}>
+                <NoDataFound text="You have not added any course" />
+              </Table.Cell>
+            </Table.Row>
+          )}
+        </Table.Body>
       </Table.Root>
+      <Button disabled={addedCourses?.length === 0} bg="primary.dark" onClick={register} loading={isPending}>
+        Register Courses
+      </Button>
     </Box>
   );
 }

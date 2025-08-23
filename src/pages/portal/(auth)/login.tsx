@@ -30,9 +30,7 @@ export default function Login() {
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: (data: LoginData) => login(data),
-    onSuccess: (data) => {
-      localStorage.setItem("key", data.key)
-      console.log(data)
+    onSuccess: () => {
       navigate("/portal/student")
     }
   });

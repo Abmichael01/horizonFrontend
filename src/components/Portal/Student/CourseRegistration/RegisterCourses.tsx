@@ -1,14 +1,14 @@
 import { Box, Tabs } from "@chakra-ui/react";
-import { useState } from "react";
+// import { useState } from "react";
 import AddedCourses from "@/components/Portal/Student/CourseRegistration/AddedCourses";
-import { Course } from "@/types";
+// import { Course } from "@/types";
 import AddCourses from "./AddCourse";
 
 export default function RegisterCourses() {
-  const [addedCourses, setAddedCourses] = useState<Course[]>([]);
+  // const [addedCourses, setAddedCourses] = useState<Course[]>([]);
 
   return (
-    <Box bg="white" rounded="xl" borderColor="border" p="20px">
+    <Box bg="white" p={["8px", "20px"]}>
       <Tabs.Root defaultValue="available-courses" variant="enclosed" fitted>
         <Tabs.List colorPalette="primary.dark">
           <Tabs.Trigger value="available-courses">Available Courses</Tabs.Trigger>
@@ -16,11 +16,11 @@ export default function RegisterCourses() {
         </Tabs.List>
 
         <Tabs.Content value="available-courses"  >
-          <AddCourses setAddedCourses={setAddedCourses} />
+          <AddCourses />
         </Tabs.Content>
 
         <Tabs.Content value="added-courses" >
-          <AddedCourses addedCourses={addedCourses} setAddedCourses={setAddedCourses} />
+          <AddedCourses />
         </Tabs.Content>
       </Tabs.Root>
     </Box>

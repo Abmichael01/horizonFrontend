@@ -6,6 +6,7 @@ import { components, hooks, utils } from '@generouted/react-router/client'
 export type Path =
   | `/`
   | `/admission/form`
+  | `/portal/createuser`
   | `/portal/login`
   | `/portal/student`
   | `/portal/student/course-registration`

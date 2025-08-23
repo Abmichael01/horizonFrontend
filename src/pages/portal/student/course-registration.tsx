@@ -13,7 +13,8 @@ export default function CourseRegistration() {
   return (
     <Box
       bg="white"
-      p="20px"
+      p={["10px", "20px"]}
+      py="20px"
       border="1px solid"
       rounded="xl"
       borderColor={"border"}

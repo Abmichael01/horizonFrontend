@@ -1,34 +1,34 @@
-import BulletTitle from "@/components/Generals/BulletTitle";
-import { Table, Flex, CardBody, Heading, Text, Box } from "@chakra-ui/react";
-
-// Example data for registered courses (this would normally come from a server or state)
-const registeredCourses = [
-  { id: 1, code: "CS101", title: "Introduction to Computer Science", units: 3 },
-  { id: 2, code: "MATH101", title: "Calculus I", units: 4 },
-  { id: 3, code: "ENG101", title: "English Literature", units: 3 },
-  { id: 4, code: "PHYS101", title: "Physics I", units: 4 },
-  { id: 5, code: "CHEM101", title: "General Chemistry", units: 3 },
-  { id: 6, code: "BIO101", title: "Introduction to Biology", units: 3 },
-  { id: 7, code: "CS102", title: "Data Structures and Algorithms", units: 4 },
-  { id: 8, code: "CS103", title: "Database Systems", units: 3 },
-  { id: 9, code: "HIST101", title: "World History", units: 3 },
-  { id: 10, code: "ECON101", title: "Principles of Economics", units: 3 },
-  { id: 11, code: "STAT101", title: "Statistics for Scientists", units: 3 },
-  { id: 12, code: "PHIL101", title: "Introduction to Philosophy", units: 3 },
-  { id: 13, code: "ART101", title: "Introduction to Art", units: 3 },
-];
-
-// Stats array for dynamic mapping
-const stats = [
-  { label: "Total Courses", value: registeredCourses.length },
-  {
-    label: "Total Units",
-    value: registeredCourses.reduce((total, course) => total + course.units, 0),
-  },
-];
+import { registeredCourses as registeredCoursesEnd } from "@/api/apiEndpoints";
+import NoDataFound from "@/components/Generals/NoDataFound";
+import { RegisteredCourses as RegisteredCoursesType } from "@/types";
+import { Table, Flex, Heading, Text, Box, Spinner } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function RegisteredCourses() {
-  const rows = registeredCourses.map((course) => (
+  const { data, isLoading } = useQuery({
+    queryKey: ["registered-courses"],
+    queryFn: registeredCoursesEnd,
+  });
+
+  if (isLoading) {
+    return (
+      <Flex align="center" justify="center" minH="200px">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
+
+  const registered = data as RegisteredCoursesType;
+
+  const stats = [
+    { label: "Total Courses", value: registered?.total_courses },
+    {
+      label: "Total Units",
+      value: registered?.total_units,
+    },
+  ];
+
+  const rows = registered?.courses.map((course) => (
     <Table.Row key={course.code}>
       <Table.Cell>{course.code}</Table.Cell>
       <Table.Cell>{course.title}</Table.Cell>
@@ -37,17 +37,15 @@ export default function RegisteredCourses() {
   ));
 
   return (
-    <Flex direction="column" spaceY="20px" p={5}>
-      <BulletTitle>Registered Courses</BulletTitle>
-
+    <Flex direction="column" spaceY={["10px", "20px"]} p={["8px", "20px"]}>
       {/* Stats Cards */}
-      <Flex gap={6} direction={{ base: "column", md: "row" }} mb={6}>
+      <Flex gap={6} direction={{ base: "row", md: "row" }} mb={6}>
         {stats.map((stat, index) => (
           <Box
             key={index}
-            bg="primary.50"
+            bg="gray.100"
             border="1px solid"
-            borderColor={"primary.100"}
+            borderColor={"border"}
             boxShadow=""
             p={5}
             borderRadius="xl"
@@ -58,7 +56,7 @@ export default function RegisteredCourses() {
             <Heading size="sm" color="primary.500">
               {stat.label}
             </Heading>
-            <Text fontSize="3xl" fontWeight="bold" color="primary.dark">
+            <Text fontSize="3xl" fontWeight="bold" color="gray.700">
               {stat.value}
             </Text>
           </Box>
@@ -74,7 +72,17 @@ export default function RegisteredCourses() {
             <Table.ColumnHeader>Units</Table.ColumnHeader>
           </Table.Row>
         </Table.Header>
-        <Table.Body>{rows}</Table.Body>
+        <Table.Body>
+          {rows && rows.length > 0 ? (
+            rows
+          ) : (
+            <Table.Row>
+              <Table.Cell colSpan={4} textAlign="center">
+                <NoDataFound text="You have not registered any course" />
+              </Table.Cell>
+            </Table.Row>
+          )}
+        </Table.Body>
       </Table.Root>
     </Flex>
   );
