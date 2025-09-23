@@ -70,7 +70,7 @@ export default function AddedCourses() {
           ) : (
             <Table.Row>
               <Table.Cell colSpan={4}>
-                <NoDataFound text="You have not added any course" />
+                <NoDataFound text="No courses added yet. Go to the 'Available Courses' tab to browse and add courses to your registration list." />
               </Table.Cell>
             </Table.Row>
           )}

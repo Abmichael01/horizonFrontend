@@ -12,7 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { SidebarClose, SidebarOpen } from "lucide-react";
 import { Tooltip } from "@/components/ui/tooltip"
 
-export default function Navbar() {
+export default function LecturerNavbar() {
   const { isOpen, toggle } = useSidebarStore()
   const { mutate, isPending } = useMutation({
     mutationFn: () => logout(),
@@ -36,13 +36,13 @@ export default function Navbar() {
       <Box cursor="pointer" onClick={toggle} display={{ base: "block", lg: "none" }} >
         { isOpen ? <Tooltip content="Close Sidebar"><SidebarClose /></Tooltip> : <Tooltip content="Open Sidebar"><SidebarOpen /></Tooltip> }
       </Box>
-      <Text>Hey</Text>
+      <Text>Lecturer Portal</Text>
 
       <Menu.Root>
         <Menu.Trigger asChild>
           <button className="outline-none">
             <Avatar.Root cursor={"pointer"}>
-              <Avatar.Fallback name="Segun Adebayo" />
+              <Avatar.Fallback name="Dr. John Smith" />
               <Avatar.Image src="https://bit.ly/sage-adebayo" />
             </Avatar.Root>
           </button>
@@ -77,3 +77,5 @@ export default function Navbar() {
     </Flex>
   );
 }
+
+

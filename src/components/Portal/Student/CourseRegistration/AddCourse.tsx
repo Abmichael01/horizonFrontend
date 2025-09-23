@@ -98,7 +98,11 @@ export default function AddCourses() {
             ) : (
               <Table.Row>
                 <Table.Cell colSpan={4} textAlign="center">
-                 <NoDataFound />
+                  {search ? (
+                    <NoDataFound text="No courses found matching your search. Try different keywords or check the 'Added Courses' tab to review your selections." />
+                  ) : (
+                    <NoDataFound text="Great! You've added all available courses from your department. Use the search bar to find courses from other departments, or check the 'Added Courses' tab to review and register your selections." />
+                  )}
                 </Table.Cell>
               </Table.Row>
             )}

@@ -6,6 +6,7 @@ export type LoginData = {
 export type User = {
   email: string;
   date_joined: string;
+  user_type: 'student' | 'lecturer' | null;
 };
 
 export type Faculty = {
@@ -92,12 +93,13 @@ export type CreateUser =  {
   email: string;
   password: string;
   full_name: string;
-  matric_number: string;
-  dob: string; // ISO date string
-  cgpa: number;
   phone: string;
-  department: string;
-  level: string;
+  department: number;
+  // Student specific fields
+  dob?: string; // ISO date string
+  level?: number;
+  // Lecturer specific fields
+  specialization?: string;
 }
 
 export type Level = {
@@ -109,3 +111,31 @@ export type CreateUserData = {
   departments: Department[];
   levels: Level[];
 }
+
+// Lecturer Types
+export type LecturerProfile = {
+  id: string; // Format: LEC-XXXXXX
+  user: User;
+  full_name: string;
+  staff_id: string; // Same as id for consistency
+  phone: string;
+  department: Department;
+  specialization: string;
+  created_at: string;
+};
+
+export type LecturerOverview = {
+  current_semester: string;
+  lecturer_profile: LecturerProfile;
+  current_academic_session: AcademicSession;
+  total_courses: number;
+  total_students: number;
+};
+
+export type LecturerActivity = {
+  id: number;
+  type: 'assignment' | 'grade' | 'announcement' | 'course';
+  description: string;
+  date: string;
+  course?: string;
+};

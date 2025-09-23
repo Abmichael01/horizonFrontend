@@ -6,9 +6,6 @@ import { Box, Tabs } from "@chakra-ui/react";
 import { BookMarkedIcon, BookOpen, File } from "lucide-react";
 
 export default function CourseRegistration() {
-  // const [  ]
-  
-
  
   return (
     <Box

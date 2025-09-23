@@ -3,6 +3,7 @@ import { Course } from "@/types";
 import { Box, Heading, Text, Button, Flex, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { jsPDF } from "jspdf";
+import NoDataFound from "@/components/Generals/NoDataFound";
 
 const generatePDF = (courses: Course[]) => {
   // Create a new jsPDF instance
@@ -59,6 +60,15 @@ export default function CourseForm() {
   }
 
   const courses = data?.courses as Course[];
+  
+  // Check if there are no registered courses
+  if (!courses || courses.length === 0) {
+    return (
+      <Flex direction="column" p={5} gap={["10px", "20px"]}>
+        <NoDataFound text="No registered courses found. Please register for courses first using the 'Register Courses' tab, then come back here to download your registration form." />
+      </Flex>
+    );
+  }
   
   return (
     <Flex direction="column" p={5} gap={[ "10px", "20px" ]}>

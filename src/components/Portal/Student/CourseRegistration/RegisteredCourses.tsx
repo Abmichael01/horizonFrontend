@@ -78,7 +78,7 @@ export default function RegisteredCourses() {
           ) : (
             <Table.Row>
               <Table.Cell colSpan={4} textAlign="center">
-                <NoDataFound text="You have not registered any course" />
+                <NoDataFound text="You haven't registered for any courses yet. Go to the 'Register Courses' tab to browse and add courses to your registration." />
               </Table.Cell>
             </Table.Row>
           )}

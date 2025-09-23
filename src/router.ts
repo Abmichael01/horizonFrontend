@@ -7,6 +7,12 @@ export type Path =
   | `/`
   | `/admission/form`
   | `/portal/createuser`
+  | `/portal/lecturer`
+  | `/portal/lecturer/assignments`
+  | `/portal/lecturer/calendar`
+  | `/portal/lecturer/courses`
+  | `/portal/lecturer/grades`
+  | `/portal/lecturer/students`
   | `/portal/login`
   | `/portal/student`
   | `/portal/student/course-registration`

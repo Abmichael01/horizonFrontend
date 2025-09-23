@@ -4,9 +4,10 @@ import { z } from "zod"; // Import Zod for validation
 import { zodResolver } from "@hookform/resolvers/zod"; // Import zodResolver
 import { useMutation } from "@tanstack/react-query";
 import { LoginData } from "@/types";
-import { login } from "@/api/apiEndpoints";
+import { login, getUser } from "@/api/apiEndpoints";
 import errorMessage from "@/lib/errorMessage";
-import { useNavigate } from "@/router";
+import { useAuthStore } from "@/stores/authStore";
+import { useNavigate } from "react-router";
 
 // Define the validation schema with Zod
 const schema = z.object({
@@ -18,6 +19,9 @@ const schema = z.object({
 });
 
 export default function Login() {
+  const navigate = useNavigate();
+  const setUser = useAuthStore((s) => s.setUser);
+  
   // Set up React Hook Form with Zod validation
   const {
     register,
@@ -26,12 +30,28 @@ export default function Login() {
   } = useForm({
     resolver: zodResolver(schema), // Hook form validation powered by Zod
   });
-  const navigate = useNavigate()
 
   const { mutate, isPending, error } = useMutation({
-    mutationFn: (data: LoginData) => login(data),
-    onSuccess: () => {
-      navigate("/portal/student")
+    mutationFn: async (data: LoginData) => {
+      // First login to authenticate
+      await login(data);
+      // Then get user data with user_type
+      const userData = await getUser();
+      return userData;
+    },
+    onSuccess: (userData) => {
+      // Set user in auth store
+      setUser(userData);
+      
+      // Redirect based on user type
+      if (userData.user_type === 'student') {
+        navigate("/portal/student");
+      } else if (userData.user_type === 'lecturer') {
+        navigate("/portal/lecturer");
+      } else {
+        // Fallback for users without a profile
+        navigate("/portal/student");
+      }
     }
   });
 

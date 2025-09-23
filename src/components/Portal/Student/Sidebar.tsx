@@ -59,22 +59,41 @@ export default function Sidebar() {
         </Box>
         <Flex h="full" direction="column">
           {mainNavs.map((nav, index) => (
-            <Link key={index} to={nav.path} onClick={toggle}>
-              <Text
-                display="flex"
-                gap="10px"
-                alignItems="center"
-                px="30px"
-                py="10px"
-                bg={pathname === nav.path ? "gray.100" : ""}
-                borderRight={pathname === nav.path ? "2px solid" : ""}
-                borderRightColor={pathname === nav.path ? "primary.500" : ""}
-                color="gray.700"
-              >
-                <nav.icon fontSize="30px" />
-                {nav.title}
-              </Text>
-            </Link>
+            <div key={index}>    {/* Wrap the link in a div to avoid the parent element error */}
+              <Link to={nav.path}  >
+                <Text
+                  display={{  base: "none", lg: "flex"}}
+                  gap="10px"
+                  alignItems="center"
+                  px="30px"
+                  py="10px"
+                  bg={pathname === nav.path ? "gray.100" : ""}
+                  borderRight={pathname === nav.path ? "2px solid" : ""}
+                  borderRightColor={pathname === nav.path ? "primary.500" : ""}
+                  color="gray.700"
+                >
+                  <nav.icon fontSize="30px" />
+                  {nav.title}
+                </Text>
+              </Link>
+              <Link to={nav.path}  onClick={toggle}>
+                <Text
+                  display={{  base: "flex", lg: "none"}}
+                  gap="10px"
+                  alignItems="center"
+                  px="30px"
+                  py="10px"
+                  bg={pathname === nav.path ? "gray.100" : ""}
+                  borderRight={pathname === nav.path ? "2px solid" : ""}
+                  borderRightColor={pathname === nav.path ? "primary.500" : ""}
+                  color="gray.700"
+                >
+                  <nav.icon fontSize="30px" />
+                  {nav.title}
+                </Text>
+              </Link>
+            </div>
+
           ))}
         </Flex>
       </Stack>

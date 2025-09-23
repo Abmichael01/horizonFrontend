@@ -1,4 +1,5 @@
 import Student from "@/components/Portal/Auth/Student";
+import Lecturer from "@/components/Portal/Auth/Lecturer";
 import { Button, Stack, Text } from "@chakra-ui/react";
 import { Link, useSearchParams } from "react-router";
 
@@ -19,6 +20,7 @@ export default function CreateUser() {
         </Stack>
       )}
       {userType === "student" && <Student /> }
+      {userType === "lecturer" && <Lecturer /> }
     </Stack>
   );
 }
