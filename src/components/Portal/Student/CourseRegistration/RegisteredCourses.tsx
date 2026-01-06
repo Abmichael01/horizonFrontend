@@ -1,8 +1,9 @@
 import { registeredCourses as registeredCoursesEnd } from "@/api/apiEndpoints";
 import NoDataFound from "@/components/Generals/NoDataFound";
 import { RegisteredCourses as RegisteredCoursesType } from "@/types";
-import { Table, Flex, Heading, Text, Box, Spinner } from "@chakra-ui/react";
+import { Table, Flex, Box, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import StatsCardGrid, { StatItem } from "@/components/Generals/StatsCardGrid";
 
 export default function RegisteredCourses() {
   const { data, isLoading } = useQuery({
@@ -20,11 +21,16 @@ export default function RegisteredCourses() {
 
   const registered = data as RegisteredCoursesType;
 
-  const stats = [
-    { label: "Total Courses", value: registered?.total_courses },
+  const stats: StatItem[] = [
+    { 
+      title: "Total Courses", 
+      value: registered?.total_courses || 0,
+      color: "primary.500",
+    },
     {
-      label: "Total Units",
-      value: registered?.total_units,
+      title: "Total Units",
+      value: registered?.total_units || 0,
+      color: "primary.500",
     },
   ];
 
@@ -39,33 +45,43 @@ export default function RegisteredCourses() {
   return (
     <Flex direction="column" spaceY={["10px", "20px"]} p={["8px", "20px"]}>
       {/* Stats Cards */}
-      <Flex gap={6} direction={{ base: "row", md: "row" }} mb={6}>
-        {stats.map((stat, index) => (
-          <Box
-            key={index}
-            bg="gray.100"
-            border="1px solid"
-            borderColor={"border"}
-            boxShadow=""
-            p={5}
-            borderRadius="xl"
-            w="full"
-            _hover={{ boxShadow: "lg" }}
-            transition="all 0.3s ease-in-out"
-          >
-            <Heading size="sm" color="primary.500">
-              {stat.label}
-            </Heading>
-            <Text fontSize="3xl" fontWeight="bold" color="gray.700">
-              {stat.value}
-            </Text>
-          </Box>
-        ))}
-      </Flex>
+      <Box mb={6}>
+        <StatsCardGrid stats={stats} templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }} gap={6} />
+      </Box>
 
       {/* Table for Registered Courses */}
-      <Table.Root variant="outline">
-        <Table.Header>
+      <Box
+        border="1px solid"
+        borderColor="border"
+        rounded="lg"
+        overflow="hidden"
+        w="100%"
+      >
+        <Box
+          overflowX="auto"
+          w="100%"
+          css={{
+            '&::-webkit-scrollbar': {
+              height: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: '#f1f1f1',
+              borderRadius: '10px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: '#c1c1c1',
+              borderRadius: '10px',
+              '&:hover': {
+                background: '#a8a8a8',
+              },
+            },
+            // For Firefox
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#c1c1c1 #f1f1f1',
+          }}
+        >
+          <Table.Root variant="outline" minW="500px" rounded="lg">
+        <Table.Header bg="gray.50">
           <Table.Row>
             <Table.ColumnHeader>Course Code</Table.ColumnHeader>
             <Table.ColumnHeader>Title</Table.ColumnHeader>
@@ -83,7 +99,9 @@ export default function RegisteredCourses() {
             </Table.Row>
           )}
         </Table.Body>
-      </Table.Root>
+        </Table.Root>
+        </Box>
+      </Box>
     </Flex>
   );
 }

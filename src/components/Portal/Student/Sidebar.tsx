@@ -1,12 +1,13 @@
 import Logo from "@/components/Generals/Logo";
 import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
-import { TbLayoutDashboard } from "react-icons/tb";
+import { TbLayoutDashboard, TbSchool, TbChevronDown, TbChevronRight } from "react-icons/tb";
 import { LuNotebookText } from "react-icons/lu";
 import { FaTasks } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
-import { IoCalendarNumberOutline } from "react-icons/io5";
+import { TbBell } from "react-icons/tb";
 import { useSidebarStore } from "@/stores/sidebarStore";
+import { useState } from "react";
 
 const mainNavs = [
   { title: "Dashboard", icon: TbLayoutDashboard, path: "/portal/student" },
@@ -15,9 +16,13 @@ const mainNavs = [
     icon: FaTasks,
     path: "/portal/student/course-registration",
   },
-  { title: "Assignments", icon: LuNotebookText, path: "/assignments" },
-  { title: "Results", icon: LuClipboardList, path: "/results" },
-  { title: "Calendar", icon: IoCalendarNumberOutline, path: "/calendar" },
+];
+
+const lmsSubNavs = [
+  { title: "Overview", icon: TbSchool, path: "/portal/student/lms" },
+  { title: "Assignments", icon: LuNotebookText, path: "/portal/student/lms/assignments" },
+  { title: "Grades", icon: LuClipboardList, path: "/portal/student/lms/grades" },
+  { title: "Announcements", icon: TbBell, path: "/portal/student/lms/announcements" },
 ];
 
 // const additionalNavs = [
@@ -28,6 +33,11 @@ const mainNavs = [
 export default function Sidebar() {
   const pathname = useLocation().pathname;
   const { isOpen, toggle } = useSidebarStore();
+  const [isLmsOpen, setIsLmsOpen] = useState(false);
+  
+  // Check if current path is under LMS
+  const isLmsPath = pathname.startsWith('/portal/student/lms');
+  
   return (
     <Box>
       {isOpen && (
@@ -39,6 +49,7 @@ export default function Sidebar() {
           blur={"lg"}
           zIndex="99999"
           onClick={toggle}
+          display={{ base: "block", lg: "none" }}
         ></Box>
       )}
       <Stack
@@ -53,48 +64,78 @@ export default function Sidebar() {
         transition="left .5s"
         zIndex="999999"
         bg="white"
+        display={{ base: "flex", lg: "flex" }}
       >
         <Box scale="0.8">
           <Logo />
         </Box>
         <Flex h="full" direction="column">
           {mainNavs.map((nav, index) => (
-            <div key={index}>    {/* Wrap the link in a div to avoid the parent element error */}
-              <Link to={nav.path}  >
-                <Text
-                  display={{  base: "none", lg: "flex"}}
-                  gap="10px"
-                  alignItems="center"
-                  px="30px"
-                  py="10px"
-                  bg={pathname === nav.path ? "gray.100" : ""}
-                  borderRight={pathname === nav.path ? "2px solid" : ""}
-                  borderRightColor={pathname === nav.path ? "primary.500" : ""}
-                  color="gray.700"
-                >
-                  <nav.icon fontSize="30px" />
-                  {nav.title}
-                </Text>
-              </Link>
-              <Link to={nav.path}  onClick={toggle}>
-                <Text
-                  display={{  base: "flex", lg: "none"}}
-                  gap="10px"
-                  alignItems="center"
-                  px="30px"
-                  py="10px"
-                  bg={pathname === nav.path ? "gray.100" : ""}
-                  borderRight={pathname === nav.path ? "2px solid" : ""}
-                  borderRightColor={pathname === nav.path ? "primary.500" : ""}
-                  color="gray.700"
-                >
-                  <nav.icon fontSize="30px" />
-                  {nav.title}
-                </Text>
-              </Link>
-            </div>
-
+            <Link key={index} to={nav.path} onClick={toggle}>
+              <Text
+                display="flex"
+                gap="10px"
+                alignItems="center"
+                px="30px"
+                py="10px"
+                bg={pathname === nav.path ? "gray.100" : ""}
+                borderRight={pathname === nav.path ? "2px solid" : ""}
+                borderRightColor={pathname === nav.path ? "primary.500" : ""}
+                color="gray.700"
+                userSelect="none"
+              >
+                <nav.icon fontSize="30px" />
+                {nav.title}
+              </Text>
+            </Link>
           ))}
+          
+          {/* LMS Dropdown */}
+          <Box>
+            <Flex
+              gap="10px"
+              alignItems="center"
+              px="30px"
+              py="10px"
+              color="gray.700"
+              cursor="pointer"
+              onClick={() => setIsLmsOpen(!isLmsOpen)}
+              userSelect={"none"}
+            >
+              <TbSchool fontSize="30px" />
+              <Text flex="1">LMS</Text>
+              {isLmsOpen ? (
+                <TbChevronDown fontSize="20px" />
+              ) : (
+                <TbChevronRight fontSize="20px" />
+              )}
+            </Flex>
+            
+            {isLmsOpen && (
+              <Stack gap="1" ml="6">
+                {lmsSubNavs.map((nav, index) => (
+                  <Link key={index} to={nav.path} onClick={toggle}>
+                    <Text
+                      display="flex"
+                      gap="10px"
+                      alignItems="center"
+                      px="20px"
+                      py="8px"
+                      bg={pathname === nav.path ? "gray.100" : ""}
+                      borderRight={pathname === nav.path ? "2px solid" : ""}
+                      borderRightColor={pathname === nav.path ? "primary.500" : ""}
+                      color="gray.600"
+                      fontSize="sm"
+                      userSelect={"none"}
+                    >
+                      <nav.icon fontSize="20px" />
+                      {nav.title}
+                    </Text>
+                  </Link>
+                ))}
+              </Stack>
+            )}
+          </Box>
         </Flex>
       </Stack>
     </Box>

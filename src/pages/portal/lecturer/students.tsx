@@ -3,7 +3,7 @@ import { Box, Text, Stack } from "@chakra-ui/react";
 export default function LecturerStudents() {
   return (
     <Stack spaceY="20px">
-      <Text fontWeight={700} fontSize={20}>
+      <Text fontWeight={500} fontSize={20}>
         Students
       </Text>
       <Box

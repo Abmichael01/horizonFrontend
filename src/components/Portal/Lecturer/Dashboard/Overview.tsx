@@ -2,7 +2,7 @@ import { LecturerOverview as LecturerOverviewType, LecturerProfile } from "@/typ
 import { Flex, Box, Text, Grid, Avatar, Separator } from "@chakra-ui/react";
 
 interface Props {
-  data: LecturerOverviewType;
+  data?: LecturerOverviewType;
 }
 
 export default function LecturerOverview({ data }: Props) {

@@ -27,8 +27,35 @@ const config = defineConfig({
         border: { value: "#F9F9F9" }
       },
       fonts: {
-        hero: { value: "DM Sans" }
+        body: { value: "Poppins, sans-serif" },
+        heading: { value: "Poppins, sans-serif" },
+        hero: { value: "Poppins, sans-serif" }
       }
+    },
+    styles: {
+      global: {
+        body: {
+          // Custom scrollbar styles
+          "&::-webkit-scrollbar": {
+            width: "8px",
+            height: "8px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "#f1f1f1",
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#c1c1c1",
+            borderRadius: "10px",
+            "&:hover": {
+              background: "#a8a8a8",
+            },
+          },
+          // For Firefox
+          scrollbarWidth: "thin",
+          scrollbarColor: "#c1c1c1 #f1f1f1",
+        },
+      },
     },
   },
 });

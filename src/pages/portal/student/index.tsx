@@ -16,7 +16,7 @@ export default function Dashboard() {
 
   return (
     <Stack spaceY="20px">
-      <Text fontWeight={700} fontSize={20}>
+      <Text fontWeight={500} fontSize={20}>
         Student's Dashboard
       </Text>
       <Overview data={data  as StudentOverview} />

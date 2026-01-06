@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from "axios";
 
-const API_BASE_URL = "http://localhost:8000/api";
+const API_BASE_URL = "http://localhost:8001/api";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -10,7 +10,7 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
- let isRefreshing = false;
+let isRefreshing = false;
 let refreshPromise: Promise<unknown> | null = null;
 
 apiClient.interceptors.response.use(
@@ -40,11 +40,14 @@ apiClient.interceptors.response.use(
         // Wait for the refresh to finish (success or failure)
         if (refreshPromise) {
           await refreshPromise;
+          // If refresh was successful, retry the original request
+          return apiClient(originalRequest);
         }
       } catch {
-        // ignore refresh failure here; caller will handle via error state
+        // Refresh failed, reject the original request
+        return Promise.reject(error);
       }
-      // Always reject the original request so callers (React Query) see an error
+      // If no refresh promise, reject the original request
       return Promise.reject(error);
     }
 

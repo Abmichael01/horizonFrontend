@@ -3,28 +3,35 @@ import { Box, Flex, Stack, Text } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
 import { TbLayoutDashboard } from "react-icons/tb";
 import { LuNotebookText } from "react-icons/lu";
-import { FaChalkboardTeacher } from "react-icons/fa";
-import { LuClipboardList } from "react-icons/lu";
+import { TbSchool, TbChevronDown, TbChevronRight } from "react-icons/tb";
 import { IoCalendarNumberOutline } from "react-icons/io5";
 import { FaUsers } from "react-icons/fa";
+import { TbClipboardList, TbBell, TbChartBar, TbUserCheck } from "react-icons/tb";
 import { useSidebarStore } from "@/stores/sidebarStore";
+import { useState } from "react";
 
 const mainNavs = [
   { title: "Dashboard", icon: TbLayoutDashboard, path: "/portal/lecturer" },
-  {
-    title: "My Courses",
-    icon: FaChalkboardTeacher,
-    path: "/portal/lecturer/courses",
-  },
   { title: "Students", icon: FaUsers, path: "/portal/lecturer/students" },
-  { title: "Assignments", icon: LuNotebookText, path: "/portal/lecturer/assignments" },
-  { title: "Grades", icon: LuClipboardList, path: "/portal/lecturer/grades" },
   { title: "Calendar", icon: IoCalendarNumberOutline, path: "/portal/lecturer/calendar" },
+];
+
+const lmsSubNavs = [
+  { title: "Overview", icon: TbSchool, path: "/portal/lecturer/lms" },
+  { title: "Assignments", icon: LuNotebookText, path: "/portal/lecturer/lms/assignments" },
+  { title: "Announcements", icon: TbBell, path: "/portal/lecturer/lms/announcements" },
+  { title: "Grades", icon: TbClipboardList, path: "/portal/lecturer/lms/grades" },
+  { title: "Attendance", icon: TbUserCheck, path: "/portal/lecturer/lms/attendance" },
+  { title: "Analytics", icon: TbChartBar, path: "/portal/lecturer/lms/analytics" },
 ];
 
 export default function LecturerSidebar() {
   const pathname = useLocation().pathname;
   const { isOpen, toggle } = useSidebarStore();
+  const [isLmsOpen, setIsLmsOpen] = useState(false);
+  
+  // Check if current path is under LMS
+  const isLmsPath = pathname.startsWith('/portal/lecturer/lms');
   return (
     <Box>
       {isOpen && (
@@ -36,6 +43,7 @@ export default function LecturerSidebar() {
           blur={"lg"}
           zIndex="99999"
           onClick={toggle}
+          display={{ base: "block", lg: "none" }}
         ></Box>
       )}
       <Stack
@@ -68,12 +76,60 @@ export default function LecturerSidebar() {
                 borderRight={pathname === nav.path ? "2px solid" : ""}
                 borderRightColor={pathname === nav.path ? "primary.500" : ""}
                 color="gray.700"
+                userSelect="none"
               >
                 <nav.icon fontSize="30px" />
                 {nav.title}
               </Text>
             </Link>
           ))}
+          
+          {/* LMS Dropdown */}
+          <Box>
+            <Flex
+              gap="10px"
+              alignItems="center"
+              px="30px"
+              py="10px"
+              color="gray.700"
+              cursor="pointer"
+              onClick={() => setIsLmsOpen(!isLmsOpen)}
+              userSelect={"none"}
+            >
+              <TbSchool fontSize="30px" />
+              <Text flex="1">LMS</Text>
+              {isLmsOpen ? (
+                <TbChevronDown fontSize="20px" />
+              ) : (
+                <TbChevronRight fontSize="20px" />
+              )}
+            </Flex>
+            
+            {isLmsOpen && (
+              <Stack gap="1" ml="6">
+                {lmsSubNavs.map((nav, index) => (
+                  <Link key={index} to={nav.path} onClick={toggle}>
+                    <Text
+                      display="flex"
+                      gap="10px"
+                      alignItems="center"
+                      px="20px"
+                      py="8px"
+                      bg={pathname === nav.path ? "gray.100" : ""}
+                      borderRight={pathname === nav.path ? "2px solid" : ""}
+                      borderRightColor={pathname === nav.path ? "primary.500" : ""}
+                      color="gray.600"
+                      fontSize="sm"
+                      userSelect={"none"}
+                    >
+                      <nav.icon fontSize="20px" />
+                      {nav.title}
+                    </Text>
+                  </Link>
+                ))}
+              </Stack>
+            )}
+          </Box>
         </Flex>
       </Stack>
     </Box>

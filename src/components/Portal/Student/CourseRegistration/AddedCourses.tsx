@@ -55,8 +55,9 @@ export default function AddedCourses() {
 
   return (
     <Box spaceY="5">
-      <Table.Root variant="outline">
-        <Table.Header>
+      <Box border="1px solid" borderColor="border" rounded="lg" overflow="hidden">
+        <Table.Root variant="outline" rounded="lg">
+        <Table.Header bg="gray.50">
           <Table.Row>
             <Table.ColumnHeader>Course Code</Table.ColumnHeader>
             <Table.ColumnHeader>Title</Table.ColumnHeader>
@@ -76,6 +77,7 @@ export default function AddedCourses() {
           )}
         </Table.Body>
       </Table.Root>
+      </Box>
       <Button disabled={addedCourses?.length === 0} bg="primary.dark" onClick={register} loading={isPending}>
         Register Courses
       </Button>

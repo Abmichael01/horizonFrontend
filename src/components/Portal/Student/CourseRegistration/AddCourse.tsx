@@ -83,8 +83,9 @@ export default function AddCourses() {
           <Spinner size="lg" />
         </Flex>
       ) : (
-        <Table.Root variant="outline">
-          <Table.Header>
+        <Box border="1px solid" borderColor="border" rounded="lg" overflow="hidden">
+          <Table.Root variant="outline" rounded="lg">
+          <Table.Header bg="gray.50">
             <Table.Row>
               <Table.ColumnHeader>Course Code</Table.ColumnHeader>
               <Table.ColumnHeader>Title</Table.ColumnHeader>
@@ -108,6 +109,7 @@ export default function AddCourses() {
             )}
           </Table.Body>
         </Table.Root>
+        </Box>
       )}
     </Box>
   );

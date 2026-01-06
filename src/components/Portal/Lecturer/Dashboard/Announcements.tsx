@@ -60,7 +60,7 @@ export default function LecturerAnnouncements() {
               <announcement.icon size={16} />
             </Box>
             <Box flex="1">
-              <Text fontWeight="600" fontSize="sm" mb="5px">
+              <Text fontWeight="400" fontSize="sm" mb="5px">
                 {announcement.title}
               </Text>
               <Text fontSize="xs" color="gray.600" mb="5px">

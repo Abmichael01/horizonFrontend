@@ -7,7 +7,6 @@ import { LoginData } from "@/types";
 import { login, getUser } from "@/api/apiEndpoints";
 import errorMessage from "@/lib/errorMessage";
 import { useAuthStore } from "@/stores/authStore";
-import { useNavigate } from "react-router";
 
 // Define the validation schema with Zod
 const schema = z.object({
@@ -19,9 +18,8 @@ const schema = z.object({
 });
 
 export default function Login() {
-  const navigate = useNavigate();
   const setUser = useAuthStore((s) => s.setUser);
-  
+
   // Set up React Hook Form with Zod validation
   const {
     register,
@@ -42,15 +40,16 @@ export default function Login() {
     onSuccess: (userData) => {
       // Set user in auth store
       setUser(userData);
-      
+      console.log(userData);
+
       // Redirect based on user type
       if (userData.user_type === 'student') {
-        navigate("/portal/student");
+        window.location.href = "/portal/student";
       } else if (userData.user_type === 'lecturer') {
-        navigate("/portal/lecturer");
+        window.location.href = "/portal/lecturer";
       } else {
         // Fallback for users without a profile
-        navigate("/portal/student");
+        window.location.href = "/portal/student";
       }
     }
   });
@@ -105,6 +104,7 @@ export default function Login() {
             alignSelf="flex-start"
             w="full"
             loading={isPending}
+            bg="primary.dark"
           >
             Submit
           </Button>

@@ -14,7 +14,7 @@ export default function Logo() {
         </Text>
       </Box>
       <Box>
-        <Text lineHeight={1} fontWeight={700} textAlign={"start"} >
+        <Text lineHeight={1} fontWeight={500} textAlign={"start"} >
           Horizon <br /> Academy
         </Text>
         <Text color="gray.400" fontSize={13} fontWeight={500}>Building Great Minds for Purpose</Text>

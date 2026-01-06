@@ -86,7 +86,12 @@ export default function Student() {
 
   const onSubmit = (data: FormData) => {
     // You can handle the form submission here
-    const formData = { ...data, user_type: "student" }
+    const formData = { 
+      ...data, 
+      user_type: "student",
+      department: parseInt(data.department),
+      level: parseInt(data.level)
+    }
     console.log(formData)
     mutate(formData)
   };
